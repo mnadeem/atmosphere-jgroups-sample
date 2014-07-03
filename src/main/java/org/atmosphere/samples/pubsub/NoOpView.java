@@ -30,11 +30,13 @@ import org.springframework.web.servlet.View;
 public class NoOpView implements View {
 
 	private String contentType;
-	
+
+	public static final NoOpView DEFAULT = new NoOpView();
+
 	/**
 	 * 
 	 */
-	public NoOpView() {
+	private NoOpView() {
 		
 	}
 

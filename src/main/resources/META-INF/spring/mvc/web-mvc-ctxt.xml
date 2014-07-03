@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="
+					http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           			http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+           			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- Map static resources, order should be before dispatcher servlet! /resources/ is for application defined resources.
+         Serve these resources with a 1-year future expiration to ensure maximum use of the browser cache and a reduction in HTTP requests made by the browser -->
+    <mvc:resources order="0" mapping="/resources/**" location="/resources/, classpath:/META-INF/web-resources/" cache-period="31556926"/>
+	
+	<!-- This tag allows for mapping the DispatcherServlet to "/" (thus overriding the mapping of the container's default Servlet),
+         while still allowing static resource requests to be handled by the container's default Servlet. -->
+    <mvc:default-servlet-handler/>
+
+    <!--This tag is a shorcut for defining a ParameterizableViewController that immediately forwards to a view when invoked.
+    Use it in static cases when there is no Java Controller logic to execute before the view generates the response. -->
+    <mvc:view-controller path="/" view-name="HomePage" />
+
+    <!-- This tag defaults the basic components required for delegating the requests to your Controllers.
+         If this tag is not added to the XML, then you will have to manually define the beans for components like HandlerAdapter,
+         HandlerMapping, Binding Initializer, Request Message converters, etc. This tag helps registering the following components.
+         Need to research configuring, application validation/binding initializer does not work when enabling... -->
+    <mvc:annotation-driven >
+        <mvc:argument-resolvers>
+            <bean class="org.atmosphere.samples.pubsub.AtmosphereResourceArgumentResolver" />
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+
+	<!-- Scans application @Controller to deploy -->
+	<context:component-scan base-package="org.atmosphere.samples.pubsub">
+ 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!-- View strings that match Tiles names are resolved with this ViewResolver -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver"> 
+		<property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/> 
+	</bean>
+
+	<!-- The tiles configurer loads the tiles-definition on startup -->
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>/WEB-INF/**/tiles-layouts.xml</value>
+				<value>/WEB-INF/**/tiles-views.xml</value>
+			</list>
+		</property>
+		<!-- resolving preparer names as Spring bean definition names -->
+		<property name="preparerFactoryClass"
+			value="org.springframework.web.servlet.view.tiles2.SpringBeanPreparerFactory" />
+	</bean>
+	
+</beans>

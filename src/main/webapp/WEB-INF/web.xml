@@ -20,7 +20,7 @@
         </init-param>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:META-INF/spring/mvc/mvc-dispatcher-servlet.xml</param-value>
+            <param-value>classpath:META-INF/spring/mvc/web-boot-ctxt.xml</param-value>
         </init-param>
         <init-param>
             <param-name>org.atmosphere.cpr.AtmosphereInterceptor</param-name>

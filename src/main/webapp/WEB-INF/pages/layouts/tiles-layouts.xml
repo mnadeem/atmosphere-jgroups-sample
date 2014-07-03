@@ -4,16 +4,12 @@
        "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
 <tiles-definitions>
 
-	<definition name="baseLayout" template="/WEB-INF/pages/common/layout.jsp">
+	<definition name="baseLayout" template="/WEB-INF/pages/layouts/layout.jsp">
 		<put-attribute name="title" value="Spring Atmosphere Example" />
-		<put-attribute name="header" value="/WEB-INF/pages/common/header.jsp" />
+		<put-attribute name="header" value="/WEB-INF/pages/layouts/header.jsp" />
 		<put-attribute name="body" value="" />
-		<put-attribute name="footer" value="/WEB-INF/pages/common/footer.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/pages/layouts/footer.jsp" />
 		<put-attribute name="activeTab" value="" />
-	</definition>
-
-	<definition name="HomePage" extends="baseLayout">
-		<put-attribute name="body" value="/WEB-INF/pages/home.jsp"/>
 	</definition>
 
 </tiles-definitions>

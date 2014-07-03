@@ -1,0 +1,25 @@
+div {
+	border: 0px solid black;
+}
+
+input#phrase {
+	width: 30em;
+	background-color: #e0f0f0;
+}
+
+input#topic {
+	width: 14em;
+	background-color: #e0f0f0;
+}
+
+div.hidden {
+	display: none;
+}
+
+span.from {
+	font-weight: bold;
+}
+
+span.alert {
+	font-style: italic;
+}

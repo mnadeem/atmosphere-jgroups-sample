@@ -18,7 +18,6 @@ package org.atmosphere.samples.pubsub;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.atmosphere.cpr.ApplicationConfig;
 import org.atmosphere.cpr.AtmosphereConfig;
@@ -27,7 +26,6 @@ import org.atmosphere.cpr.AtmosphereResourceEventListenerAdapter;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.cpr.ClusterBroadcastFilter;
-import org.atmosphere.cpr.FrameworkConfig;
 import org.atmosphere.cpr.HeaderConfig;
 import org.atmosphere.plugin.jgroups.JGroupsFilter;
 import org.atmosphere.util.XSSHtmlFilter;
@@ -43,21 +41,11 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class PubSubController {
 
+	private static final int FORE_EVER = -1;
+	private static final String SLASH = "/";
+
 	public PubSubController() {
 
-	}
-
-	/**
-	 * Handles the main page load
-	 * 
-	 * @param request
-	 * @param response
-	 * @return ModelAndView
-	 */
-	@RequestMapping(value="/", method=RequestMethod.GET)
-	public String loadPage() {
-		// Returns just the Spring view name which matches the Tile in tiles.xml to load
-		return "HomePage";
 	}
 
 	/**
@@ -67,15 +55,13 @@ public class PubSubController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/{topic}/**", method = RequestMethod.GET)
-	public ModelAndView subscribe(@PathVariable("topic") String topic, HttpServletRequest request) throws Exception {
-		AtmosphereResource resource = (AtmosphereResource) request
-				.getAttribute(FrameworkConfig.ATMOSPHERE_RESOURCE);
+	public ModelAndView subscribe(@PathVariable("topic") String topic, HttpServletRequest request, AtmosphereResource resource) {
 
-		this.processGet(topic, request, resource.getResponse());
+		this.processGet(topic, request, resource);
 
 		// A NoOpView is returned to tell Spring Dispatcher framework not to render anything
 		// since it is all Atmosphere-related code
-		ModelAndView mv = new ModelAndView(new NoOpView());
+		ModelAndView mv = new ModelAndView(NoOpView.DEFAULT);
 		return mv;
 	}
 
@@ -86,24 +72,21 @@ public class PubSubController {
 	 * @return String
 	 */
 	@RequestMapping(value = "/{topic}/**", method = RequestMethod.POST)
-	public ModelAndView broadcastMessage(@PathVariable("topic") String topic, HttpServletRequest request)
+	public ModelAndView broadcastMessage(@PathVariable("topic") String topic, HttpServletRequest request, AtmosphereResource resource)
 			throws Exception {
 
-		this.processPost(topic, request);
+		this.processPost(topic, request, resource);
 
 		// A NoOpView is returned to tell Spring Dispatcher framework not to render anything
 		// since it is all Atmosphere-related code
-		ModelAndView mv = new ModelAndView(new NoOpView());
+		ModelAndView mv = new ModelAndView(NoOpView.DEFAULT);
 		return mv;
 	}
 
 	// See AtmosphereHandlerPubSub example - same code as GET
 	private void processGet(
 			String topic,
-			HttpServletRequest req, HttpServletResponse res) {
-
-		AtmosphereResource event = (AtmosphereResource) req
-				.getAttribute(FrameworkConfig.ATMOSPHERE_RESOURCE);
+			HttpServletRequest req,  AtmosphereResource event) {
 
 		event.addEventListener(new WebSocketEventListenerAdapter());
 		event.addEventListener(new AtmosphereResourceEventListenerAdapter());
@@ -113,19 +96,17 @@ public class PubSubController {
 
 		Broadcaster b = lookupBroadcaster(topic, restOfTheUrl);
 
-
 		String header = req.getHeader(HeaderConfig.X_ATMOSPHERE_TRANSPORT);
 		if (HeaderConfig.LONG_POLLING_TRANSPORT.equalsIgnoreCase(header)) {
 			req.setAttribute(ApplicationConfig.RESUME_ON_BROADCAST, Boolean.TRUE);
 		} 
 
-		event.suspend(-1);
+		event.suspend(FORE_EVER);
 		b.addAtmosphereResource(event);
 
 		ClusterBroadcastFilter filter = newFilter(b, event.getAtmosphereConfig());
 		b.getBroadcasterConfig().addFilter(filter);
 		b.getBroadcasterConfig().addFilter(new XSSHtmlFilter());
-
 	}
 
 	private ClusterBroadcastFilter newFilter(Broadcaster bc, AtmosphereConfig atmosphereConfig) {
@@ -133,10 +114,7 @@ public class PubSubController {
 		return filter;
 	}
 
-	// See AtmosphereHandlerPubSub example - same code as POST
-	private void processPost(String topic, HttpServletRequest req) throws IOException {
-		AtmosphereResource resource = (AtmosphereResource) req
-				.getAttribute(FrameworkConfig.ATMOSPHERE_RESOURCE);
+	private void processPost(String topic, HttpServletRequest req, AtmosphereResource resource) throws IOException {
 
 		String restOfTheUrl = (String) req.getAttribute(
 				HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
@@ -145,7 +123,7 @@ public class PubSubController {
 
 		String message = req.getReader().readLine();
 		resource.resume();
-		if (message != null && message.indexOf("message") != -1) {
+		if (message != null && message.indexOf("message") != FORE_EVER) {
 			b.broadcast(message.substring("message=".length()));
 		}
 	}
@@ -157,8 +135,8 @@ public class PubSubController {
 	 * @return the {@link Broadcaster} based on the request's path info.
 	 */
 	Broadcaster lookupBroadcaster(String topic, String restOfTheUrl) {
-		String pathInfo = topic + "/" + restOfTheUrl;
-		String[] decodedPath = pathInfo.split("/");
+		String pathInfo = topic + SLASH + restOfTheUrl;
+		String[] decodedPath = pathInfo.split(SLASH);
 		return BroadcasterFactory.getDefault().lookup(decodedPath[decodedPath.length - 1], true);
 	}
 }
