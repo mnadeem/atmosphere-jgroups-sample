@@ -31,12 +31,12 @@ public class BroadcastMessage implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private final String topic;
 	private final Object message;
-		
+
 	public BroadcastMessage(String topic, Object message) {
 		this.topic = topic;
 		this.message = message;
 	}
-	
+
 	/**
 	 * @return the topic
 	 */

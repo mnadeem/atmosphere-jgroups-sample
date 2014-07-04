@@ -41,7 +41,8 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class PubSubController {
 
-	private static final int FORE_EVER = -1;
+	private static final String JGROUPS_PROTOCOL_STACK = "tcp_custom.xml";
+    private static final int FORE_EVER = -1;
 	private static final String SLASH = "/";
 
 	public PubSubController() {
@@ -110,7 +111,8 @@ public class PubSubController {
 	}
 
 	private ClusterBroadcastFilter newFilter(Broadcaster bc, AtmosphereConfig atmosphereConfig) {
-		ClusterBroadcastFilter filter = new JGroupsFilter(bc);
+        System.setProperty("java.net.preferIPv4Stack", "true");
+	    ClusterBroadcastFilter filter = new JGroupsFilter(bc, JGROUPS_PROTOCOL_STACK);
 		return filter;
 	}
 

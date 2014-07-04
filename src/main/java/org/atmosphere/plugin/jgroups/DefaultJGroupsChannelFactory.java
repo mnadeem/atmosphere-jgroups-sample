@@ -25,7 +25,8 @@ import org.jgroups.JChannel;
 public class DefaultJGroupsChannelFactory {
     private static JGroupsChannel jc;
 
-    public static String DEFAULT_JGROUPS_XML = "org/atmosphere/plugin/jgroups/JGroupsFilter.xml";
+    //public static String DEFAULT_JGROUPS_XML = "org/atmosphere/plugin/jgroups/JGroupsFilter.xml";
+    public static String DEFAULT_JGROUPS_XML = "udp.xml";
     public static String DEFAULT_CHANNEL_NAME = "JGroupsChannel";
 
     private DefaultJGroupsChannelFactory() {
@@ -40,6 +41,7 @@ public class DefaultJGroupsChannelFactory {
     }
 
     public static synchronized JGroupsChannel getDefaultJGroupsChannel(String jGroupsFilterLocation, String channelName) {
+
         if (jc == null) {
             try {
                 JChannel channel = new JChannel(jGroupsFilterLocation);

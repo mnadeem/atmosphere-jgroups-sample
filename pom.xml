@@ -11,6 +11,7 @@
 	<properties>
 		<apache-tiles.version>2.2.2</apache-tiles.version>
 		<atmosphere.version>2.1.6</atmosphere.version>
+		<atmosphere-compat.version>1.0.0</atmosphere-compat.version>
 		<spring.version>3.1.1.RELEASE</spring.version>
 		<jsp-api.version>2.1</jsp-api.version>
 		<jstl.version>1.2</jstl.version>
@@ -217,31 +218,59 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-runtime</artifactId>
-			<version>${atmosphere.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.jgroups</groupId>
 			<artifactId>jgroups</artifactId>
 			<version>${jgroups.version}</version>
 			<scope>compile</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.atmosphere</groupId>
+			<artifactId>atmosphere-runtime</artifactId>
+			<version>${atmosphere.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- <dependency>
+            <groupId>org.atmosphere</groupId>
+            <artifactId>atmosphere-runtime-native</artifactId>
+            <version>${atmosphere.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.atmosphere</groupId>
+      				<artifactId>atmosphere-compat-tomcat</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+		<dependency>
+			<groupId>org.atmosphere</groupId>
+			<artifactId>atmosphere-compat-jbossweb</artifactId>
+			<version>${atmosphere-compat.version}</version>
+			<exclusions>
+            	<exclusion>
+            		<groupId>org.atmosphere</groupId>
+      				<artifactId>atmosphere-compat-tomcat</artifactId>
+            	</exclusion>
+            </exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.atmosphere</groupId>
+			<artifactId>atmosphere-compat-tomcat7</artifactId>
+			<version>${atmosphere-compat.version}</version>
+		</dependency> -->
+		<!-- <dependency>
+			<groupId>org.atmosphere</groupId>
+			<artifactId>atmosphere-compat-tomcat</artifactId>
+			<version>${atmosphere-compat.version}</version>
+		</dependency>	 -->	
 	</dependencies>
 	<build>
 		<resources>
 			<resource>
 				<directory>src/main/java</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>**/*.*</include>
-				</includes>
+				<filtering>false</filtering>				
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
-				<filtering>false</filtering>
+				<filtering>true</filtering>
 			</resource>
 		</resources>
 		<plugins>
@@ -254,8 +283,23 @@
 					<webAppConfig>
 						<contextPath>/${project.artifactId}</contextPath>
 					</webAppConfig>
+					<connectors>
+				       <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+				          <port>9090</port>
+				          <maxIdleTime>60000</maxIdleTime>
+				       </connector>
+				     </connectors>
 				</configuration>
 			</plugin>
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-compiler-plugin</artifactId>
+		        <version>3.1</version>
+		        <configuration>
+		          <source>1.6</source>
+		          <target>1.6</target>
+		        </configuration>
+		      </plugin>
 		</plugins>
 	</build>
 </project>

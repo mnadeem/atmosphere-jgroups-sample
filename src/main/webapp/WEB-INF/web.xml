@@ -10,10 +10,26 @@
             <param-name>org.atmosphere.servlet</param-name>
             <param-value>org.springframework.web.servlet.DispatcherServlet</param-value>
         </init-param>
+        <init-param>
+			<param-name>org.atmosphere.cpr.broadcasterLifeCyclePolicy</param-name>
+			<param-value>EMPTY_DESTROY</param-value>
+		</init-param>
+		<init-param>
+			<param-name>org.atmosphere.cpr.broadcaster.shareableThreadPool</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>org.atmosphere.cpr.recoverFromDestroyedBroadcaster</param-name>
+			<param-value>true</param-value>
+		</init-param>
        <!--  <init-param>
             <param-name>org.atmosphere.cpr.broadcasterClass</param-name>
             <param-value>org.atmosphere.plugin.jgroups.JGroupsBroadcaster</param-value>
         </init-param> -->
+        <init-param>
+        	<param-name>org.atmosphere.cpr.broadcastFilterClasses</param-name> 
+			<param-value>org.atmosphere.client.TrackMessageSizeFilter</param-value>
+		</init-param>
         <init-param>
             <param-name>org.atmosphere.useStream</param-name>
             <param-value>true</param-value>

@@ -10,7 +10,7 @@
 
 <!--  <logger name="org.jgroups.protocols.UDP" level="DEBUG" /> -->
 
- <logger name="org." level="DEBUG" />
+ <logger name="org" level="DEBUG" />
 
   <root level="DEBUG">
 	<appender-ref ref="STDOUT" />
