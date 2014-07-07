@@ -15,7 +15,6 @@
  */
 package org.atmosphere.plugin.jgroups;
 
-
 import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.ClusterBroadcastFilter;
@@ -37,8 +36,6 @@ import org.slf4j.LoggerFactory;
  * if there is a registry of them implemented somehow, but its easier to just
  * inject the JGroupsChannel into the filter.
  *
- * @author Jean-Francois Arcand (original version)
- * @author westraj
  */
 public class JGroupsFilter implements ClusterBroadcastFilter {
 
@@ -56,7 +53,7 @@ public class JGroupsFilter implements ClusterBroadcastFilter {
         this.jchannel = DefaultJGroupsChannelFactory.getDefaultJGroupsChannel(jGroupsFilterLocation);
         setBroadcaster(bc);
     }
-    
+
     public JGroupsFilter(Broadcaster bc, String jGroupsFilterLocation, String channelName){
         this.jchannel = DefaultJGroupsChannelFactory.getDefaultJGroupsChannel(jGroupsFilterLocation, channelName);
         setBroadcaster(bc);        
